@@ -1,0 +1,1 @@
+- [PyCon India 2019](https://toransahu.github.io/blogs/pycon/india/2019/)
