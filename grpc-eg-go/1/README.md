@@ -1,12 +1,21 @@
 # Building a basic microservice with gRPC using Golang - Part 1
 
+## Introduction
+
+Being easy to use, [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) [API](https://en.wikipedia.org/wiki/Application_programming_interface) is the current most popular framework among developers for the web application development. REST has been used to expose the services to the outer world, and also for internal communication among internal microservices. However, ease and flexibility comes with some pitfalls. REST requires very strict *Human Agreement*, and relies on *Documentation*. Also, it has found not so very performant in case of internal communication and real-time applications. In 2015, [gRPC](https://grpc.io/) kick in. gRPC initially developed at Google is now disrupting the industry. gRPC is a modern open source high performance RPC framework, which comes with a simple language-agnostic [Interface Definition Language](https://en.wikipedia.org/wiki/Interface_description_language) (IDL) system, leveraging [Protocol Buffers](https://developers.google.com/protocol-buffers/).
+
+## Objective
+
+The purpose of this blog is to get you started with gRPC in [Go](https://golang.org/) with a simple working example. The blog covers basic information like `What`, `Why`, `When`/`Where`, and `How` about the gRPC. We'll majorly focus on `How` section, to implement the client and server, to write [unittests](https://en.wikipedia.org/wiki/Unit_testing) to test the client and server code separately, and will run the code to establish a client-server communication.
+
+
 ## What is gRPC?
 
 [gRPC](https://grpc.io/) - Remote Procedure Call
 
-- gRPC is a high performance, open source universal RPC Framework. 
-- It enables the server and client applications to communicate transparently and build connected systems. 
-- gRPC is developed and open sourced by Google (but no, the [g](https://github.com/grpc/grpc/blob/master/doc/g_stands_for.md) doesn’t stand for Google).
+- gRPC is a high performance, open source universal RPC Framework
+- It enables the server and client applications to communicate transparently and build connected systems
+- gRPC is developed and open sourced by Google (but no, the [g](https://github.com/grpc/grpc/blob/master/doc/g_stands_for.md) doesn’t stand for Google)
 
 ## Why use gRPC?
 
@@ -16,7 +25,7 @@
 - High Performance
     - Advantages of working with protocol buffers, including efficient serialization, a simple IDL, and easy interface updating
     - Advantages of improved features of HTTP/2
-        - *Multiplexing*: This forces service-client to utilise a single TCP connection to simultaneously handle multiple requests.
+        - *Multiplexing*: This forces service-client to utilise a single TCP connection to simultaneously handle multiple requests
         - *Binary Framing and Compression*
 - Multi-way communication
     - Simple/Uni-ary RPC
@@ -37,6 +46,8 @@ The “where” is pretty easy: we can leverage gRPC almost anywhere we have two
 Our example is a simple *“Stack Machine”* as a service that lets clients perform operations like, `PUSH`, `ADD`, `SUB`, `MUL`, `DIV`, `FIBB`, `AP`, `GP`. 
 
 In Part-1 we’ll focus on Simple RPC implementation, in Part-2 we’ll focus on Server-side & Client-side streaming RPC, and in Part-3 we’ll implement Bidirectional streaming RPC.
+
+Let's get started with installing the pre-requisites of the development.
 
 ### Prerequisites
 
@@ -231,7 +242,7 @@ func (s *MachineServer) Execute(ctx context.Context, instructions *machine.Instr
             stack.Push(float32(operand))
         case POP:
             stack.Pop()
-        case ADD, MUL, DIV:
+        case ADD, SUB, MUL, DIV:
             item2, popped := stack.Pop()
             item1, popped := stack.Pop()
 
@@ -241,6 +252,8 @@ func (s *MachineServer) Execute(ctx context.Context, instructions *machine.Instr
 
             if op_type == ADD {
                 stack.Push(item1 + item2)
+            } else if op_type == SUB {
+                stack.Push(item1 - item2)
             } else if op_type == MUL {
                 stack.Push(item1 * item2)
             } else if op_type == DIV {
