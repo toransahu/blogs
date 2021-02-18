@@ -1,1 +1,3 @@
-- [Building a basic microservice with gRPC using Golang - Part 1](https://toransahu.github.io/blogs/grpc-eg-go/1/)
+- [Part-1: Building a basic microservice with gRPC using Golang](https://toransahu.github.io/blogs/grpc-eg-go/1/)
+- [Part-2: Building a basic microservice with unidirectional-streaming gRPC using Golang](https://toransahu.github.io/blogs/grpc-eg-go/2/)
+- [Part-3: Building a basic microservice with bidirectional-streaming gRPC using Golang](https://toransahu.github.io/blogs/grpc-eg-go/3/)
