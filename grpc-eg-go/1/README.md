@@ -421,7 +421,7 @@ ok      command-line-arguments    0.004s
 
 ### Run
 
-Now we are assured through unit tests that the business logics of the server & client codes are working as expected, let’s try running the server and communicating to it via our client code.
+Now we are assured through unit tests that the business logic of the server & client codes is working as expected, let’s try running the server and communicating to it via our client code.
 
 #### Server
 
