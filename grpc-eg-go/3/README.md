@@ -4,15 +4,15 @@
 
 <h1>Building a basic microservice with bidirectional-streaming gRPC using Golang</h1>
 
-If you have been through the part-2 of this blog series, you would have already got to know that the gRPC framework has got support for uni-directional streaming RPCs. But that is not the end. gRPC has support for bi-directional RPCs as well. Being said that, a gRPC client and a gRPC server can stream requests and responses simultaneously utilizing the same TCP connection.
+If you have been through part-2 of this blog series, you would have already got to know that the gRPC framework has got support for uni-directional streaming RPCs. But that is not the end. gRPC has support for bi-directional RPCs as well. Being said that, a gRPC client and a gRPC server can stream requests and responses simultaneously utilizing the same TCP connection.
 
 ## Objective
 
-In this blog you'll get know what is bi-directional streaming RPCs. How to implement, test, and run them using a live, fully functional example.
+In this blog, you'll get to know what is bi-directional streaming RPCs. How to implement, test, and run them using a live, fully functional example.
 
 > Previously in the [part-2]() of this [blog series](), we've learned the basics of uni-directional streaming gRPCs, how to implement those gRPC, how to write unit tests, how to launch the server & client. part-2 walks you through a step-by-step guide to implement a _Stack Machine_ server & client leveraging the uni-directional streaming RPC.
 
-> If you've missed that, it is highly recommended to go through it to get familiar with the basics of gRPC framework & streaming RPCs.
+> If you've missed that, it is highly recommended to go through it to get familiar with the basics of the gRPC framework & streaming RPCs.
 
 ## Introduction
 
@@ -26,17 +26,17 @@ Bidirectional streaming RPCs where:
 
 The best thing is, the order of messages in each stream is preserved.
 
-Now lets improve the _"Stack Machine"_ server & client codes to support bidirectional streaming.
+Now let's improve the _"Stack Machine"_ server & client codes to support bidirectional streaming.
 
 ## Implementing Bidirectional Streaming RPC
 
-We already have Server-streaming RPC `ServerStreamingExecute()` to handle `FIB` operation which streams the numbers from Fibonacci series, and Client-straing RPC `Execute()` to handle the stream of instructions to perform basic `ADD/SUB/MUL/DIV` operations and return a single response.
+We already have Server-streaming RPC `ServerStreamingExecute()` to handle `FIB` operation which streams the numbers from Fibonacci series, and Client-streaming RPC `Execute()` to handle the stream of instructions to perform basic `ADD/SUB/MUL/DIV` operations and return a single response.
 
 In this blog we'll merge both the functionality to make the `Execute()` RPC a bidirectional streaming one.
 
 ### Update the protobuf
 
-Let's update the `machine/machine.proto` to make Execute() a bi-directional (server & client streaming) RPC, so that the client can stream the instructions rather than sending a set of intructions to the server & the server can respond with stream of results. Doing so, we're getting rid of `InstructionSet` and `ServerStreamingExecute()`.
+Let's update the `machine/machine.proto` to make Execute() a bi-directional (server & client streaming) RPC, so that the client can stream the instructions rather than sending a set of instructions to the server & the server can respond with a stream of results. Doing so, we're getting rid of `InstructionSet` and `ServerStreamingExecute()`.
 
 The updated `machine/machine.proto` now looks like:
 
@@ -91,7 +91,7 @@ You'll notice that declaration of `ServerStreamingExecute()` has been removed fr
 
 ### Update the Server
 
-Now we need to update the server code to make `Execute()` a bi-directional (server & client streaming) RPC so that it should be able to accept stream the instructions from client and at the same time it can respond with stream of results.
+Now we need to update the server code to make `Execute()` a bi-directional (server & client streaming) RPC so that it should be able to accept stream the instructions from the client and at the same time it can respond with a stream of results.
 
 ```go
 func (s *MachineServer) Execute(stream machine.Machine_ExecuteServer) error {
@@ -165,7 +165,7 @@ func (s *MachineServer) Execute(stream machine.Machine_ExecuteServer) error {
 
 ### Update the Client
 
-Let's update the client code to make `client.Execute()` a bi-directional streaming RPC, so that the client can stream the instructions to the server and can recieve stream of results at the same time.
+Let's update the client code to make `client.Execute()` a bi-directional streaming RPC so that the client can stream the instructions to the server and can receive a stream of results at the same time.
 
 ```go
 func runExecute(client machine.MachineClient, instructions []*machine.Instruction) {
@@ -209,7 +209,7 @@ func runExecute(client machine.MachineClient, instructions []*machine.Instructio
 
 ### Test
 
-Before we start updting the unit test, let's generate mocks for `MachineClient`, `Machine_ExecuteClient`, and `Machine_ExecuteServer` interfaces to mock the `stream` type while testing the bidirectional streaming RPC `Execute()`.
+Before we start updating the unit test, let's generate mocks for `MachineClient`, `Machine_ExecuteClient`, and `Machine_ExecuteServer` interfaces to mock the `stream` type while testing the bidirectional streaming RPC `Execute()`.
 
 ```
 ~/disk/E/workspace/grpc-eg-go
@@ -218,7 +218,7 @@ $ mockgen github.com/toransahu/grpc-eg-go/machine MachineClient,Machine_ExecuteS
 
 The updated `mock_machine/machine_mock.go` should look like [this](https://github.com/toransahu/grpc-eg-go/commit/85a45cec309e3cabb58ca9e46f64fe669b899cf1).
 
-Now, we're good to write unit test for bidirectional streaming RPC `Execute()`.
+Now, we're good to write a unit test for bidirectional streaming RPC `Execute()`.
 
 #### Server
 
@@ -335,7 +335,7 @@ ok      command-line-arguments  0.003s
 
 ### Run
 
-As now we are assured through unit tests that business logic of the server & client codes are working as expected, let’s try running the server and communicating to it via our client code.
+Now we are assured through unit tests that the business logic of the server & client codes is working as expected, let’s try running the server and communicating to it via our client code.
 
 #### Server
 
@@ -368,26 +368,25 @@ EOF
 
 ## Bonus
 
-There are situations when one has to choose between _mocking a dependency_ versus _incorporating the dependencies_ into test environment & running them live\_.
+There are situations when one has to choose between _mocking a dependency_ versus _incorporating the dependencies_ into the test environment & running them live\_.
 
 The decision (whether to mock or not) could be made based on:
 
 1. how many dependencies are there
 1. which are the essential & most used dependencies
-1. is it feasible to install dependencies on test (and even developer's) environment
+1. is it feasible to install dependencies on the test (and even the developer's) environment
 1. etc.
 
 To one extreme we can mock everything. But the mocking effort should pay us off.
 
-For gRPC framework, we can run the gRPC server live & write client codes to test against the business logic.
-But spinning up a server from the test file can lead to unintended consequences that may require you to allocate a TCP port (parallel runs, multiple runs under same CI server).
+For the gRPC framework, we can run the gRPC server live & write client codes to test against the business logic.
+But spinning up a server from the test file can lead to unintended consequences that may require you to allocate a TCP port (parallel runs, multiple runs under the same CI server).
 
-To solve this gRPC community has introduced a package called [bufconn](google.golang.org/grpc/test/bufconn) under gRPC's testing package. `bufconn` is a package which provides a `Listener` object that implements `net.Conn`. We can substitute this listener in a gRPC server - allowing us to spin up a server that acts as a full-fledged server that can be used for testing that talks over an in-memory buffer instead of a real port.
+To solve this gRPC community has introduced a package called [bufconn](google.golang.org/grpc/test/bufconn) under gRPC's testing package. `bufconn` is a package that provides a `Listener` object that implements `net.Conn`. We can substitute this listener in a gRPC server - allowing us to spin up a server that acts as a full-fledged server that can be used for testing that talks over an in-memory buffer instead of a real port.
 
-As `bufconn` already comes with the [grpc](google.golang.org/grpc) go module - which we already have installed, we don't need to install it explicitely.
+As `bufconn` already comes with the [grpc](google.golang.org/grpc) go module - which we already have installed, we don't need to install it explicitly.
 
-So, let's create a new test file `server/machine_live_test.go` write the following test code to launch the
-gRPC server live using `bufconn`, and write a client to test the bidirectional RPC `Execute()`.
+So, let's create a new test file `server/machine_live_test.go` write the following test code to launch the gRPC server live using `bufconn`, and write a client to test the bidirectional RPC `Execute()`.
 
 ```go
 const bufSize = 1024 * 1024
@@ -497,10 +496,10 @@ At the end of this blog, we’ve learned:
 
 - How to define an interface for bi-directional streaming RPC using protobuf
 - How to write gRPC server & client logic for bi-directional streaming RPC
-- How to write and run unit test for bi-directional streaming RPC
-- How to write and run unit test for bi-directional streaming RPC buy running the server live leveraging `bufconn` package
+- How to write and run the unit test for bi-directional streaming RPC
+- How to write and run the unit test for bi-directional streaming RPC by running the server live leveraging the `bufconn` package
 - How to run the gRPC server and a client can communicate to it
 
-Source code of this example is available at [toransahu/grpc-eg-go](https://github.com/toransahu/grpc-eg-go).
+The source code of this example is available at [toransahu/grpc-eg-go](https://github.com/toransahu/grpc-eg-go).
 
 See you on the next blog.
