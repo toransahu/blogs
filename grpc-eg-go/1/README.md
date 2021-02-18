@@ -1,17 +1,25 @@
-# Building a basic microservice with gRPC using Golang - Part 1
+<h3>Table of Content</h3>
+
+[TOC]
+
+<h1>Building a basic microservice with gRPC using Golang</h1>
 
 ## Introduction
 
-Being easy to use, [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) [API](https://en.wikipedia.org/wiki/Application_programming_interface) is the current most popular framework among developers for web application development. REST has been used to expose the services to the outer world, and also for internal communication among internal microservices. However, ease and flexibility comes with some pitfalls. REST requires very strict *Human Agreement*, and relies on *Documentation*. Also, it has found not so very performant in case of internal communication and real-time applications. In 2015, [gRPC](https://grpc.io/) kicked in. gRPC initially developed at Google is now disrupting the industry. gRPC is a modern open source high performance RPC framework, which comes with a simple language-agnostic [Interface Definition Language](https://en.wikipedia.org/wiki/Interface_description_language) (IDL) system, leveraging [Protocol Buffers](https://developers.google.com/protocol-buffers/).
+Being easy to use, [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) [API](https://en.wikipedia.org/wiki/Application_programming_interface) is the current most popular framework among developers for web application development. REST has been used to expose the services to the outer world, and also for internal communication among internal microservices. However, ease and flexibility comes with some pitfalls. REST requires very strict _Human Agreement_, and relies on _Documentation_. Also, it has found not so very performant in case of internal communication and real-time applications. In 2015, [gRPC](https://grpc.io/) kicked in. gRPC initially developed at Google is now disrupting the industry. gRPC is a modern open source high performance RPC framework, which comes with a simple language-agnostic [Interface Definition Language](https://en.wikipedia.org/wiki/Interface_description_language) (IDL) system, leveraging [Protocol Buffers](https://developers.google.com/protocol-buffers/).
 
 ## Objective
 
 The purpose of this blog is to get you started with gRPC in [Go](https://golang.org/) with a simple working example. The blog covers basic information like `What`, `Why`, `When`/`Where`, and `How` about the gRPC. We'll majorly focus on the `How` section, to implement the client and server, to write [unittests](https://en.wikipedia.org/wiki/Unit_testing) to test the client and server code separately, and will run the code to establish a client-server communication.
 
-
 ## What is gRPC?
 
-[gRPC](https://grpc.io/) - Remote Procedure Call
+<center>
+  <img src="https://grpc.io/img/logos/grpc-logo.png" style="background-color:lightblue;width:50%"/>
+
+  [gRPC](https://grpc.io/) - Remote Procedure Call
+</center>
+
 
 - gRPC is a high performance, open source universal RPC Framework
 - It enables the server and client applications to communicate transparently and build connected systems
@@ -20,18 +28,18 @@ The purpose of this blog is to get you started with gRPC in [Go](https://golang.
 ## Why use gRPC?
 
 - Better Design
-    - With gRPC we can define our service once in a .proto file and implement clients and servers in any of gRPC’s supported languages
-    - Ability to auto-generate and publish SDKs as opposed to publishing the APIs for services
+  - With gRPC we can define our service once in a .proto file and implement clients and servers in any of gRPC’s supported languages
+  - Ability to auto-generate and publish SDKs as opposed to publishing the APIs for services
 - High Performance
-    - Advantages of working with protocol buffers, including efficient serialization, a simple IDL, and easy interface updating
-    - Advantages of improved features of HTTP/2
-        - *Multiplexing*: This forces service-client to utilise a single TCP connection to simultaneously handle multiple requests
-        - *Binary Framing and Compression*
+  - Advantages of working with protocol buffers, including efficient serialization, a simple IDL, and easy interface updating
+  - Advantages of improved features of HTTP/2
+    - _Multiplexing_: This forces service-client to utilise a single TCP connection to simultaneously handle multiple requests
+    - _Binary Framing and Compression_
 - Multi-way communication
-    - Simple/Uni-ary RPC
-    - Server-side streaming RPC
-    - Client-side streaming RPC
-    - Bidirectional streaming RPC
+  - Simple/Uni-ary RPC
+  - Server-side streaming RPC
+  - Client-side streaming RPC
+  - Bidirectional streaming RPC
 
 ## Where to use gRPC?
 
@@ -43,7 +51,8 @@ The “where” is pretty easy: we can leverage gRPC almost anywhere we have two
 - Browser-based Web Applications
 
 ## How to use gRPC?
-Our example is a simple *“Stack Machine”* as a service that lets clients perform operations like, `PUSH`, `ADD`, `SUB`, `MUL`, `DIV`, `FIBB`, `AP`, `GP`. 
+
+Our example is a simple _“Stack Machine”_ as a service that lets clients perform operations like, `PUSH`, `ADD`, `SUB`, `MUL`, `DIV`, `FIBB`, `AP`, `GP`.
 
 In Part-1 we’ll focus on Simple RPC implementation, in Part-2 we’ll focus on Server-side & Client-side streaming RPC, and in Part-3 we’ll implement Bidirectional streaming RPC.
 
@@ -51,7 +60,7 @@ Let's get started with installing the pre-requisites of the development.
 
 ### Prerequisites
 
-#### Go 
+#### Go
 
 - Version 1.6 or higher.
 - For installation instructions, see Go’s Getting Started guide.
@@ -100,42 +109,40 @@ $ tree
 ```
 
 ### Defining the service
+
 Our first step is to define the gRPC service and the method request and response types using [protocol buffers](https://developers.google.com/protocol-buffers/docs/overview).
 
-To define a service, we specify a named service in our `.proto` file:
+To define a service, we specify a named service in our `machine/machine.proto` file:
 
-```
+```proto
 service Machine {
    ...
 }
 ```
 
-
-Then we define a Simple RPC method inside our service definition, specifying their request and response types. 
+Then we define a Simple RPC method inside our service definition, specifying their request and response types.
 
 - A simple RPC where the client sends a request to the server using the stub and waits for a response to come back
 
-```
+```proto
 // Execute accepts a set of Instructions from client and returns a Result.
 rpc Execute(InstructionSet) returns (Result) {}
 ```
 
+- `machine/machine.proto` file also contains protocol buffer message type definitions for all the request and response types used in our service methods.
 
-- `.proto` file also contains protocol buffer message type definitions for all the request and response types used in our service methods. 
-
-```
+```proto
 // Result represents the output of execution of the instruction(s).
 message Result {
   float output = 1;
 }
 ```
 
-Our `.proto` file should look like [this](https://github.com/toransahu/grpc-eg-go/commit/58c3b4a7962030a9998836e879d230979a906b74) considering Part-1 of this blog series.
-
+Our `machine/machine.proto` file should look like [this](https://github.com/toransahu/grpc-eg-go/commit/58c3b4a7962030a9998836e879d230979a906b74) considering Part-1 of this blog series.
 
 ### Generating client and server code
 
-We need to generate the gRPC client and server interfaces from our `.proto` service definition. 
+We need to generate the gRPC client and server interfaces from the `machine/machine.proto` service definition.
 
 ```
 ~/disk/E/workspace/grpc-eg-go
@@ -147,7 +154,7 @@ $ protoc \
   $SRC_DIR/machine/machine.proto
 ```
 
-Running this command generates the following file in the machine directory under the repository:
+Running this command generates the `machine.pb.go` file in the `machine` directory under the repository:
 
 ```
 ~/disk/E/workspace/grpc-eg-go
@@ -159,17 +166,19 @@ $ tree machine/
 ```
 
 ### Server
+
 Let's create the server.
 
 There are two parts to making our Machine service do its job:
+
 - Create `server/machine.go`:
-    Implementing the service interface generated from our service definition; writing the business logic of our service.
+  Implementing the service interface generated from our service definition; writing the business logic of our service.
 - Running the Machine gRPC server:
-    Run the server to listen for requests from clients and dispatch them to the right service implementation.
+  Run the server to listen for requests from clients and dispatch them to the right service implementation.
 
 Have a look how our `MachineServer` interface should look like: [grpc-eg-go/server/machine.go](https://github.com/toransahu/grpc-eg-go/commit/63604cf8cd1711d1559e5e34540b23a0e4db3cb0)
 
-```
+```go
 type MachineServer struct{}
 
 // Execute runs the set of instructions given.
@@ -178,14 +187,14 @@ func (s *MachineServer) Execute(ctx context.Context, instructions *machine.Instr
 }
 ```
 
-
 #### Implementing Simple RPC
+
 `MachineServer` implements only `Execute()` service method as of now - as per Part-1 of this blog series.
-`Execute()`, just gets a `InstructionSet` from the client and returns the value in a `Result` by executing every `Instruction` in the `InstructionSet` into our *Stack Machine*.
+`Execute()`, just gets a `InstructionSet` from the client and returns the value in a `Result` by executing every `Instruction` in the `InstructionSet` into our _Stack Machine_.
 
 Before implementing `Execute()`, let's implement a basic `Stack`. It should look like [this](https://github.com/toransahu/grpc-eg-go/commit/6951692c4fafa4e818f6680d180fd136c619ef3b).
 
-```
+```go
 type Stack []float32
 
 func (s *Stack) IsEmpty() bool {
@@ -208,7 +217,7 @@ func (s *Stack) Pop() (float32, bool) {
 
 Now, let’s implement the `Execute()`. It should look like [this](https://github.com/toransahu/grpc-eg-go/commit/77af4f0ac3a8840d6e5dcae2b8e42a575b456fe4).
 
-```
+```go
 type OperatorType string
 
 const (
@@ -276,17 +285,16 @@ func (s *MachineServer) Execute(ctx context.Context, instructions *machine.Instr
 
 We have implemented the `Execute()` to handle basic instructions like `PUSH`, `POP`, `ADD`, `SUB`, `MUL`, and `DIV` with proper error handling. On completion of the execution of instructions set, it pops the result from `Stack` and returns as a `Result` object to the client.
 
-
-
 #### Code to run the gRPC server
 
 To run the gRPC server we need to:
+
 - Create a new instance of gRPC struct and make it listen to one of the TCP ports at our localhost address. As a convention default port selected for gRPC is 9111.
 - In order to serve our `StackMachine` service over gRPC server, we need to register the service with the newly created gRPC server.
 
-For the development purpose, the basic insecure code to run the gRPC server should look like [this](https://github.com/toransahu/grpc-eg-go/commit/c39d5675ca47e7778cd410a0eb24ccd1f9dd4542). 
+For the development purpose, the basic insecure code to run the gRPC server should look like [this](https://github.com/toransahu/grpc-eg-go/commit/c39d5675ca47e7778cd410a0eb24ccd1f9dd4542).
 
-```
+```go
 var (
     port = flag.Int("port", 9111, "Port on which gRPC server should listen TCP conn.")
 )
@@ -307,13 +315,14 @@ func main() {
 We must consider strong TLS based security for our production environment. I’ll try planning to include an example of TLS implementation to this blog series.
 
 ### Client
-As we already know that the same `.proto` file, which is our [IDL](https://en.wikipedia.org/wiki/Interface_description_language) (Interface Definition Language) is capable of generating interfaces for clients as well. One has to just implement those interfaces to communicate with the gRPC server.
 
-With having the `.proto` either service provider can implement an SDK, or consumer/customer of the service itself can implement a client in desired programming language.
+As we already know that the same `machine/machine.proto` file, which is our [IDL](https://en.wikipedia.org/wiki/Interface_description_language) (Interface Definition Language) is capable of generating interfaces for clients as well. One has to just implement those interfaces to communicate with the gRPC server.
+
+With having a `.proto` either service provider can implement an SDK, or consumer of the service itself can implement a client in desired programming language.
 
 Lets implement our version of a basic client code, which will call the `Execute()` method of the service. The client should look like [this](https://github.com/toransahu/grpc-eg-go/commit/5aa509cc8a1cffa7ffcc126fd2a30e85d350fa14).
 
-```
+```go
 var (
     serverAddr = flag.String("server_addr", "localhost:9111", "The server address in the format of host:port")
 )
@@ -353,7 +362,9 @@ func main() {
 ### Test
 
 #### Server
-Let's write a unit test to validate our business logic of `Execute()` method. 
+
+Let's write a unit test to validate our business logic of `Execute()` method.
+
 - Create a test file `server/machine_test.go`
 - Write the unit test, it should look like [this](https://github.com/toransahu/grpc-eg-go/commit/eab052d4a66bdcf0a1ae7fd9111687c8ff4d5113).
 
@@ -373,11 +384,11 @@ ok      command-line-arguments    0.004s
 To test client-side code without the overhead of connecting to a real server, we'll use `Mock`. Mocking enables users to write light-weight unit tests to check functionalities on client-side without invoking RPC calls to a server.
 
 To write a unit test to validate client side business logic of calling the `Execute()` method:
+
 - Install [golang/mock](https://github.com/golang/mock) package
 - Generate mock for `MachineClient`
 - Create a test file `mock/machine_mock_test.go`
 - Write the unit test
-
 
 As we are leveraging the [golang/mock](https://github.com/golang/mock) package, to install the package we need to run the following command:
 
@@ -402,36 +413,42 @@ Run the test file.
 ~/disk/E/workspace/grpc-eg-go
 $ go test mock_machine/machine_mock.go  mock_machine/machine_mock_test.go -v
 === RUN   TestExecute
-2020/03/28 14:50:11 output:30
+output:30
 --- PASS: TestExecute (0.00s)
 PASS
 ok      command-line-arguments    0.004s
 ```
 
 ### Run
+
 As now we are assured through unit tests that business logic of the server & client codes are working as expected, let’s try running the server and communicating to it via our client code.
 
 #### Server
+
 To turn on the server we need to run the previously created `cmd/run_machine_server.go` file.
 
 ```
 ~/disk/E/workspace/grpc-eg-go
-$ go run cmd/run_machine_server.go 
+$ go run cmd/run_machine_server.go
 ```
 
 #### Client
+
 Now, let’s run the client code `client/machine.go`.
 
 ```
 ~/disk/E/workspace/grpc-eg-go
 $ go run client/machine.go
-2020/03/28 12:29:49 Executing instructions:<operator:"PUSH" operand:5 > instructions:<operator:"PUSH" operand:6 > instructions:<operator:"MUL" >
-2020/03/28 12:29:49 output:30
+Executing instructions:<operator:"PUSH" operand:5 > instructions:<operator:"PUSH" operand:6 > instructions:<operator:"MUL" >
+output:30
 ```
 
 Hurray!!! It worked.
 
+---
+
 At the end of this blog, we’ve learned:
+
 - Importance of gRPC - What, Why, Where
 - How to install all the prerequisites
 - How to define an interface using protobuf
@@ -439,4 +456,7 @@ At the end of this blog, we’ve learned:
 - How to write and run unit test for server & client logic
 - How to run the gRPC server and a client can communicate to it
 
-Source code of this example is available at [toransahu/grpc-eg-go](https://github.com/toransahu/grpc-eg-go). See you on the next part of this blog series.
+Source code of this example is available at [toransahu/grpc-eg-go](https://github.com/toransahu/grpc-eg-go).
+You can also `git checkout` to [this](https://github.com/toransahu/grpc-eg-go/tree/14cca388a9e0a2a3c44b8e41b94f4172710d2422) commit SHA to walk through the source code specific to this [Part-1](#introduction) of the blog series.
+
+See you on the next part of this blog series.
