@@ -4,17 +4,17 @@
 
 <h1>Building a basic microservice with unidirectional-streaming gRPC using Golang</h1>
 
-Have you ever wondered while developing a REST API that if the server could have got capability to stream responses using the same TCP connection? Or, reversely if the REST client could have got capability to stream the requests to the server, this could have saved the cost of bringing up another service (like WebSocket) just for the shake of fullfilling such requirement.
+Have you ever wondered while developing a REST API that if the server could have got the capability to stream responses using the same TCP connection? Or, reversely if the REST client could have got the capability to stream the requests to the server, this could have saved the cost of bringing up another service (like WebSocket) just for the sake of fulfilling such requirement.
 
-Then REST isn’t the only API architecture available, and for such use-cases, the gRPC model has begun to play crucial role. gRPC's unidirectional-streaming RPC feature have got your back on those requirements.
+Then REST isn’t the only API architecture available, and for such use-cases, the gRPC model has begun to play a crucial role. gRPC's unidirectional-streaming RPC feature has got your back on those requirements.
 
 ## Objective
 
-In this blog you'll get know what is client streaming & server streaming uni-directional RPCs. How to implement, test, and run them using a live, fully functional example.
+In this blog, you'll get to know what is client streaming & server streaming uni-directional RPCs. How to implement, test, and run them using a live, fully functional example.
 
 > Previously in the [part-1]() of this [blog series](), we've learned the basics of gRPC, how to implement a Simple/Unary gRPC, how to write unit tests, how to launch the server & client. part-1 walks you through a step-by-step guide to implement a _Stack Machine_ server & client leveraging Simple/Unary RPC.
 
-> If you've missed that, it is highly recommended to go through it to get familiar with the basics of gRPC framework.
+> If you've missed that, it is highly recommended to go through it to get familiar with the basics of the gRPC framework.
 
 ## Introduction
 
@@ -30,13 +30,13 @@ Server streaming RPCs where:
 - the client sends a request to the server and gets a stream to read a sequence of messages back
 - the client reads from the returned stream until there are no more messages
 
-The best thing is, gRPC guarantees message ordering within an individual RPC call.
+The best thing is gRPC guarantees message ordering within an individual RPC call.
 
-Now lets improve the _"Stack Machine"_ server & client codes to support unidirectional streaming.
+Now let's improve the _"Stack Machine"_ server & client codes to support unidirectional streaming.
 
 ## Implementing Server Streaming RPC
 
-We'll see example of Server Streaming first by implementing the `FIB` operation.
+We'll see an example of Server Streaming first by implementing the `FIB` operation.
 
 Where the `FIB` RPC will:
 
@@ -44,11 +44,11 @@ Where the `FIB` RPC will:
 - accept an integer input i.e. generate first N numbers of the Fibonacci series
 - will respond with a stream of integers i.e. first N numbers of the Fibonacci series
 
-And later we'll see how Client Streaming can be implemented so that a client can input a stream of Instructions to the Stack Machine at a real time rather than sending a single request comprised of a set of Instructions.
+And later we'll see how Client Streaming can be implemented so that a client can input a stream of Instructions to the Stack Machine in real-time rather than sending a single request comprised of a set of Instructions.
 
 ### Update the protobuf
 
-We already have defined the gRPC service `Machine` and a Simple (Unary) RPC method `Execute` inside our service definition in part-1 of the blog series. Now, lets update the service definition to add one server streaming RPC called `ServerStreamingExecute`.
+We already have defined the gRPC service `Machine` and a Simple (Unary) RPC method `Execute` inside our service definition in part-1 of the blog series. Now, let's update the service definition to add one server streaming RPC called `ServerStreamingExecute`.
 
 - A server streaming RPC where the client sends a request to the server using the stub and waits for a response to come back as a stream of result
 - To specify a server-side streaming method, need to place the `stream` keyword before the response type
@@ -96,7 +96,7 @@ You can observe that the declaration of `ServerStreamingExecute()` in the `Machi
 
 ### Update the Server
 
-Just in case if you're wondering, _What if my service don't implement some of the RPCs declared in the `machine.pb.go` file_, then you'll encounter the following error while launching your gRPC server.
+Just in case if you're wondering, _What if my service doesn't implement some of the RPCs declared in the `machine.pb.go` file_, then you'll encounter the following error while launching your gRPC server.
 
 ```
 ~/disk/E/workspace/grpc-eg-go
@@ -107,7 +107,7 @@ cmd/run_machine_server.go:32:44: cannot use &server.MachineServer literal (type 
 
 ```
 
-So, it's always a best pratice to keep your service in sync with the service definition i.e. `machine/machine.proto` & `machine/machine.pb.go`. If you do not want to support a particular RPC, or it's implementation is not yet ready, just respond with `Unimplemented` error status. Example:
+So, it's always the best practice to keep your service in sync with the service definition i.e. `machine/machine.proto` & `machine/machine.pb.go`. If you do not want to support a particular RPC, or its implementation is not yet ready, just respond with `Unimplemented` error status. Example:
 
 ```go
 // ServerStreamingExecute runs the set of instructions given and streams a sequence of Results.
@@ -147,7 +147,7 @@ func FibonacciRange(n int) <-chan int {
 
 <center>source: <a href="https://github.com/toransahu/grpc-eg-go/commit/5f2a7611c8a2e8d94cb3b2a71ddee34b6f0500bf">utils/fibonacci.go</a></center>
 
-> The blog series assumes that you're familiar with Golang basics & it's conncurrency paradigms & concepts like `Channels`. You can read more about the `Channels` from the [official document](https://tour.golang.org/concurrency/2).
+> The blog series assumes that you're familiar with Golang basics & its concurrency paradigms & concepts like `Channels`. You can read more about the `Channels` from the [official document](https://tour.golang.org/concurrency/2).
 
 This function yields the numbers of Fibonacci series till the Nth position.
 
@@ -221,7 +221,7 @@ func (s *MachineServer) ServerStreamingExecute(instructions *machine.Instruction
 
 ### Update the Client
 
-Now, update the client code to call `ServerStreamingExecute()` where the client will be recieving numbers of the Fibonacci series through the `stream` and print the same.
+Now, update the client code to call `ServerStreamingExecute()` where the client will be receiving numbers of the Fibonacci series through the `stream` and print the same.
 
 
 ```go
@@ -253,8 +253,8 @@ func runServerStreamingExecute(client machine.MachineClient, instructions *machi
 
 ### Test
 
-To write unit test we'll need to generate mock of multiple `interface` as required.
-[`mockgen`](https://github.com/golang/mock) is ready-to-go framework for mocking in Golang, so we'll be leveraging it in our unit tests.
+To write the unit test we'll need to generate the mock of multiple `interface` as required.
+[`mockgen`](https://github.com/golang/mock) is the ready-to-go framework for mocking in Golang, so we'll be leveraging it in our unit tests.
 
 #### Server
 
@@ -382,7 +382,7 @@ ok      command-line-arguments  0.003s
 
 ### Run
 
-As we are assured through unit tests that business logic of the server & client codes are working as expected, let’s try running the server and communicating to it via our client code.
+As we are assured through unit tests that the business logic of the server & client codes is working as expected, let’s try running the server and communicating to it via our client code.
 
 #### Server
 
@@ -420,8 +420,8 @@ Awesome! A Server Streaming RPC has been successfully implemented.
 
 ## Implementing Client Streaming RPC
 
-We have learned how to implemented a Server Streaming RPC, now it's time to explore the Client Streaming RPC.
-To do so, we'll not introduce another RPC, rather we'll update the existing `Execute()` RPC to accept a stream of Instructions from the client at real time rather than sending a single request comprised of a set of Instructions.
+We have learned how to implement a Server Streaming RPC, now it's time to explore the Client Streaming RPC.
+To do so, we'll not introduce another RPC, rather we'll update the existing `Execute()` RPC to accept a stream of Instructions from the client in real-time rather than sending a single request comprised of a set of Instructions.
 
 ### Update the protobuf
 
@@ -471,7 +471,7 @@ You'll notice that declaration of `Execute()` has been updated from `MachineServ
 
 ### Update the Server
 
-Let's update the server code to make `Execute()` a client streaming uni-directional RPC so that it should be able to accept stream the instructions from client and respond with a `Result` struct.
+Let's update the server code to make `Execute()` a client streaming uni-directional RPC so that it should be able to accept stream the instructions from the client and respond with a `Result` struct.
 
 
 ```go
@@ -538,7 +538,7 @@ func (s *MachineServer) Execute(stream machine.Machine_ExecuteServer) error {
 
 ### Update the Client
 
-Now update the client code to make `client.Execute()` a uni-directional streaming RPC, so that the client can stream the instructions to the server and can recieve a `Result` struct once the streaming completes.
+Now update the client code to make `client.Execute()` a uni-directional streaming RPC, so that the client can stream the instructions to the server and can receive a `Result` struct once the streaming completes.
 
 ```go
 func runExecute(client machine.MachineClient, instructions *machine.InstructionSet) {
@@ -668,7 +668,7 @@ ok      github.com/toransahu/grpc-eg-go/utils   (cached)
 
 ### Run
 
-As now we are assured through unit tests that business logic of the server & client codes are working as expected, let’s try running the server and communicating to it via our client code.
+Now we are assured through unit tests that the business logic of the server & client codes is working as expected, let’s try running the server and communicating to it via our client code.
 
 #### Server
 
@@ -708,10 +708,10 @@ At the end of this blog, we’ve learned:
 
 - How to define an interface for uni-directional streaming RPCs using protobuf
 - How to write gRPC server & client logic for uni-directional streaming RPCs
-- How to write and run unit test for server-streaming & client-streaming RPCs
+- How to write and run the unit test for server-streaming & client-streaming RPCs
 - How to run the gRPC server and a client can communicate to it
 
-Source code of this example is available at [toransahu/grpc-eg-go](https://github.com/toransahu/grpc-eg-go).
+The source code of this example is available at [toransahu/grpc-eg-go](https://github.com/toransahu/grpc-eg-go).
 You can also `git checkout` to [this](https://github.com/toransahu/grpc-eg-go/tree/b06988aa4f120a0f85ac514739603585358ead7a) commit SHA for [Part-2(a)](#implementing-server-streaming-rpc) and to [this](https://github.com/toransahu/grpc-eg-go/tree/40f434a4eb79fea421d58ba8eb2269c4bb3807a4) commit SHA for [Part-2(b)](#implementing-client-streaming-rpc).
 
-See you on the next part of this blog series.
+See you in the next part of this blog series.
