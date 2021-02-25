@@ -1,8 +1,8 @@
-<h3>Table of Content</h3>
+<!-- <h3>Table of Content</h3> -->
 
-[TOC]
+<!-- [TOC] -->
 
-<h1>Building a basic microservice with bidirectional-streaming gRPC using Golang</h1>
+<h1>Part-3: Building a basic microservice with bidirectional-streaming gRPC using Golang</h1>
 
 If you have been through part-2 of this blog series, you would have already got to know that the gRPC framework has got support for uni-directional streaming RPCs. But that is not the end. gRPC has support for bi-directional RPCs as well. Being said that, a gRPC client and a gRPC server can stream requests and responses simultaneously utilizing the same TCP connection.
 
@@ -368,14 +368,13 @@ EOF
 
 ## Bonus
 
-There are situations when one has to choose between _mocking a dependency_ versus _incorporating the dependencies_ into the test environment & running them live\_.
+There are situations when one has to choose between _mocking a dependency_ versus _incorporating the dependencies_ into the test environment & running them live.
 
-The decision (whether to mock or not) could be made based on:
+The decision - whether to mock or not could be made based on:
 
 1. how many dependencies are there
 1. which are the essential & most used dependencies
-1. is it feasible to install dependencies on the test (and even the developer's) environment
-1. etc.
+1. is it feasible to install dependencies on the test (and even the developer's) environment, etc.
 
 To one extreme we can mock everything. But the mocking effort should pay us off.
 

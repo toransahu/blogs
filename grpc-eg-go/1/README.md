@@ -1,8 +1,8 @@
-<h3>Table of Content</h3>
+<!-- <h3>Table of Content</h3> -->
 
-[TOC]
+<!-- [TOC] -->
 
-<h1>Building a basic microservice with gRPC using Golang</h1>
+<h1>Part-1: Building a basic microservice with gRPC using Golang</h1>
 
 ## Introduction
 

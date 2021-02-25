@@ -1,8 +1,8 @@
-<h3>Table of Content</h3>
+<!-- <h3>Table of Content</h3> -->
 
-[TOC]
+<!-- [TOC] -->
 
-<h1>Building a basic microservice with unidirectional-streaming gRPC using Golang</h1>
+<h1>Part-2: Building a basic microservice with unidirectional-streaming gRPC using Golang</h1>
 
 Have you ever wondered while developing a REST API that if the server could have got the capability to stream responses using the same TCP connection? Or, reversely if the REST client could have got the capability to stream the requests to the server, this could have saved the cost of bringing up another service (like WebSocket) just for the sake of fulfilling such requirement.
 
@@ -265,7 +265,7 @@ As we've upgdated our interface i.e. `machine/machine.pb.go`, let's update the m
 $ mockgen github.com/toransahu/grpc-eg-go/machine MachineClient,Machine_ServerStreamingExecuteServer > mock_machine/machine_mock.go
 ```
 
-The updated `mock_machine/machine_mock.go` should look like [this](https://github.com/toransahu/grpc-eg-go/commit/ab642a2e48ffe2263dbfd9cf054755fb7123c994">mock_machine/machine_mock.go).
+The updated `mock_machine/machine_mock.go` should look like [this](https://github.com/toransahu/grpc-eg-go/commit/ab642a2e48ffe2263dbfd9cf054755fb7123c994).
 
 Now, we're good to write unit test for server-side streaming RPC `ServerStreamingExecute()`:
 
@@ -534,7 +534,7 @@ func (s *MachineServer) Execute(stream machine.Machine_ExecuteServer) error {
 }
 ```
 
-<center>Source: <a href="https://github.com/toransahu/grpc-eg-go/commit/0136804fe1567922ae3f64796dc0e78638975109">server/machine.go</a></center>
+<center>source: <a href="https://github.com/toransahu/grpc-eg-go/commit/0136804fe1567922ae3f64796dc0e78638975109">server/machine.go</a></center>
 
 ### Update the Client
 
