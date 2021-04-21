@@ -1,0 +1,7 @@
+- revamp
+    - ref:
+        - https://yunpengn.github.io/blog/2019/06/18/re-understand-javascript/#comments
+        - https://xiaoyuliu.github.io/about/
+        - https://www.barryclark.co/?utm_source=smashing&utm_medium=post&utm_campaign=jekyll
+        - https://medium.com/@tordable/github-pages-as-blogging-platform-320524b1fffa
+        - https://github.com/barryclark/jekyll-now
